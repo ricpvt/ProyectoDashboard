@@ -4,7 +4,7 @@ Este Dashboard fue creado con streamlit para mostrar el clima de la Ciudad de M�
 
 ## Requisitos
 
-Este programa esta hecho en Python con las librerías streamlit, pandas, plost y  mysql-connector.
+Este programa esta hecho en Python con las librerías streamlit, pandas, plost y  mysql-connector-python.
 
 Para instalar estas librerías se tiene que ejecutar los siguientes comandos en la terminal de Python:
 
@@ -21,7 +21,7 @@ pip install plost
 ```
 
 ```python
-pip install mysql-connector
+pip install mysql-connector-python
 ```
 
 Para ejecutar el programa se tiene que ejecutar el siguiente comando en cualquier terminal:
