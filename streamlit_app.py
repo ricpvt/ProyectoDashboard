@@ -49,22 +49,22 @@ def dashboard():
 
 
 connection = mysql.connector.connect(
-    host="127.0.0.7",
+    host="127.0.0.1",
     user="root",
     password="password",
     database="streamlit"
 )
 cursor = connection.cursor()
 
-def authenticate_user(username, password):
+def authUsuario(usuario, password):
     query = "SELECT * FROM Users WHERE UserId = %s AND Password = %s"
-    cursor.execute(query, (username, password))
+    cursor.execute(query, (usuario, password))
     user = cursor.fetchone()
     return user is not None
 
-def register_user(username, password):
+def regUsuario(usuario, password):
     query = "INSERT INTO Users (UserId, Password) VALUES (%s, %s)"
-    cursor.execute(query, (username, password))
+    cursor.execute(query, (usuario, password))
     connection.commit()
 
 def main():
@@ -80,20 +80,18 @@ def main():
     checkboxPlaceholder = st.empty()
     
     tituloPlaceholder.markdown('### Inicio de Sesión')
-    username = usuarioPlaceholder.text_input("Nombre de Usuario")
+    usuario = usuarioPlaceholder.text_input("Nombre de Usuario")
     password = contraPlaceholder.text_input("Contraseña", type="password")
 
     if checkboxPlaceholder.checkbox("Registrarse"):
         usuarioNuevo = regUsuarioPlaceholder.text_input("Nuevo Nombre de Usuario")
         contraNueva = regContraPlaceholder.text_input("Nueva Contraseña", type="password")
         if registroPlaceholder.button("Registrar"):
-            if register_user(usuarioNuevo, contraNueva):
+            if regUsuario(usuarioNuevo, contraNueva):
                 st.success("Registro exitoso. Por favor inicie sesión con sus nuevas credenciales.")
-            else:
-                st.error("Error al registrar. Inténtelo de nuevo.")
 
     if inicioPlaceholder.button("Iniciar Sesión"):
-        if authenticate_user(username, password):
+        if authUsuario(usuario, password):
             st.success("Inicio de sesión exitoso. ¡Bienvenido!")
 
             tituloPlaceholder.empty()
