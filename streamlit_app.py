@@ -5,7 +5,7 @@ import mysql.connector
 
 def dashboard():
     st.empty()
-        
+    importarDatos()
     st.sidebar.header('Dashboard Clima CDMX (2020-2024)')
 
     st.sidebar.subheader('Parametros del Heatmap')
@@ -29,23 +29,27 @@ def dashboard():
     col3.metric("Humedad", "33%", "2%")
 
     # Fila B
-    clima_CDMX = pd.read_csv('ClimaCDMX.csv', parse_dates=['date'])
+    cursor.execute("SELECT * FROM ClimaCDMX")
+    clima_CDMX_db = cursor.fetchall()  # Obtener todos los registros de la tabla
+
+    # Convertir los datos recuperados a un DataFrame de pandas
+    clima_CDMX_df = pd.DataFrame(clima_CDMX_db, columns=['date', 'precipitation', 'temp_min', 'temp_max', 'wind'])
 
     st.markdown('### Heatmap')
     plost.time_hist(
-    data=clima_CDMX,
-    date='date',
-    x_unit='week',
-    y_unit='day',
-    color=time_hist_color,
-    aggregate='median',
-    legend=None,
-    height=345,
-    use_container_width=True)
+        data=clima_CDMX_df,
+        date='date',
+        x_unit='week',
+        y_unit='day',
+        color=time_hist_color,
+        aggregate='median',
+        legend=None,
+        height=345,
+        use_container_width=True)
 
     # Fila C
     st.markdown('### Grafico de linea')
-    st.line_chart(clima_CDMX, x = 'date', y = plot_data, height = plot_height)
+    st.line_chart(clima_CDMX_df, x='date', y=plot_data, height=plot_height)
 
 
 connection = mysql.connector.connect(
@@ -65,6 +69,14 @@ def authUsuario(usuario, password):
 def regUsuario(usuario, password):
     query = "INSERT INTO Users (UserId, Password) VALUES (%s, %s)"
     cursor.execute(query, (usuario, password))
+    connection.commit()
+
+def importarDatos():
+    clima_CDMX = pd.read_csv('ClimaCDMX.csv', parse_dates=['date'])
+
+    for index, row in clima_CDMX.iterrows():
+        query = "INSERT INTO ClimaCDMX (date, precipitation, temp_min, temp_max, wind) VALUES (%s, %s, %s, %s, %s)"
+        cursor.execute(query, (row['date'], row['precipitation'], row['temp_min'], row['temp_max'], row['wind']))
     connection.commit()
 
 def main():
