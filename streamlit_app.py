@@ -51,7 +51,7 @@ def dashboard():
 connection = mysql.connector.connect(
     host="127.0.0.7",
     user="root",
-    password="olaqwe123",
+    password="password",
     database="streamlit"
 )
 cursor = connection.cursor()
